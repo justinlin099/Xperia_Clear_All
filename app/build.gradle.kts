@@ -2,6 +2,18 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
 }
+
+// CI supplies signing credentials only to the release build step.
+// Ordinary local/debug builds do not need a private signing key.
+val releaseSigningNames = listOf(
+    "ANDROID_KEYSTORE_PATH", "ANDROID_KEYSTORE_PASSWORD", "ANDROID_KEY_ALIAS", "ANDROID_KEY_PASSWORD"
+)
+val releaseSigningValues = releaseSigningNames.associateWith { providers.environmentVariable(it).orNull }
+val hasReleaseSigning = releaseSigningValues.values.all { !it.isNullOrBlank() }
+require(releaseSigningValues.values.all { it.isNullOrBlank() } || hasReleaseSigning) {
+    "Release signing requires all four ANDROID_KEYSTORE_PATH / PASSWORD / KEY_ALIAS / KEY_PASSWORD variables."
+}
+
 android {
     namespace = "com.justinlin099.xperiarecentsrootless"
     compileSdk = 36
@@ -13,7 +25,22 @@ android {
         versionName = "0.30-test"
     }
     buildFeatures { aidl = true }
-    buildTypes { release { isMinifyEnabled = false } }
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = file(requireNotNull(releaseSigningValues["ANDROID_KEYSTORE_PATH"]))
+                storePassword = releaseSigningValues["ANDROID_KEYSTORE_PASSWORD"]
+                keyAlias = releaseSigningValues["ANDROID_KEY_ALIAS"]
+                keyPassword = releaseSigningValues["ANDROID_KEY_PASSWORD"]
+            }
+        }
+    }
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            if (hasReleaseSigning) signingConfig = signingConfigs.getByName("release")
+        }
+    }
     testOptions {
         unitTests.isIncludeAndroidResources = true
         unitTests.all { test ->
