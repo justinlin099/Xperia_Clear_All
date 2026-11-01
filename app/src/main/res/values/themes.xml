@@ -1,0 +1,12 @@
+<resources>
+    <style name="Theme.XperiaRecents" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="materialSwitchStyle">@style/Widget.Xperia.ClearSwitch</item>
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:windowLightNavigationBar">?attr/isLightTheme</item>
+        <item name="android:windowActionModeOverlay">true</item>
+    </style>
+    <style name="Widget.Xperia.ClearSwitch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
+        <item name="thumbIcon">@drawable/ic_switch_state</item>
+    </style>
+</resources>

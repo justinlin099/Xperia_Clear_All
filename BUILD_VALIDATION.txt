@@ -1,0 +1,153 @@
+Xperia Clear All 0.30-test
+
+CHANGES
+Setup cards: Shizuku, overlay permission, conditional restricted-settings help, battery, notifications.
+Android 13+: visit overlay permission first; if still denied, show restricted-settings help.
+App info -> overflow -> Allow restricted settings -> return -> reopen overlay permission.
+No permission action is gated behind prior restricted-settings acknowledgement.
+Help disappears after overlay permission is actually granted. No guessed confirmed-state flag.
+No claim of automatic detection of the restricted-settings system state.
+Only the top master switch controls enabled state; redundant overlay visibility setting removed.
+First setup automatically enables after Shizuku ready, overlay allowed, background unrestricted,
+battery exempt and recovery notifications allowed. Existing explicit off is never overridden.
+Initial activation uses absence of the single enabled-state key; no duplicate completion flag.
+No legacy shape/arrangement/margin migration or credential-storage enabled-state mirror.
+Enabled state has one device-protected store. Current profile keys are read directly.
+Existing runtime Shizuku errors/notifications and supported system navigation remain.
+
+STATIC VALIDATION
+43 locale files, 120 identical string keys, valid XML.
+Native Material shape selection and START/TOP arrangements retained.
+
+AUTOMATED VALIDATION
+PASS: Gradle 8.13 / JDK 21 :app:assembleDebug :app:testDebugUnitTest.
+111 tests, 0 failures, 0 errors, 0 skipped in the final full run.
+APK signature verified with apksigner.
+Fresh-default test verifies exact screenshot preset; native Chinese capture inspected.
+Notification tests use injected channel gateway: shell/caller validation, fixed channel scope,
+idempotent update, missing/unexpected channel handling and recovery-channel preservation.
+Actual privileged framework call on Sony is NOT device-tested.
+Native Chinese main-screen capture visually inspected for support/language/diagnostics/GitHub/credit order.
+Regression checks cover repeat donation prompts, explicit Donate/Later actions, exact destination URLs,
+foreground reentry, external return suppression and requested card/link/footer positions.
+Regression checks cover separate plain-feedback clearance, configured padding, preserved custom
+content anchors and native ripple hotspot coordinates during custom touch handling.
+Native first-run and dark appearance captures visually inspected.
+Tests cover theme-based filled-button colors, explicit white, native switch icons/state color,
+turn off -> hide warning -> turn on -> service start while worker reconnects, and intentional unbind callbacks.
+Final native Chinese first-run capture visually inspected after all changes.
+Native screen order: large title, live proportional preview, full-width Material switch bar, settings.
+No duplicate preview in appearance settings. Preference listener removed when activity stops.
+APK applicationId com.justinlin099.xperiarecentsrootless, versionCode 25, versionName 0.25-test.
+
+DEVICE LIMITATIONS
+Sony physical-device reboot/first-unlock, restricted-settings and Shizuku flows need device validation.
+Unit tests cannot prove OEM background-start behavior or actual battery savings.
+
+SIGNING
+Same debug test certificate as 0.20, SHA-256:
+8338652883be860d6b91f41bf61b90244cfc6974b5d7eabec0f9e3bdb2b334cb
+Prior private key unavailable.
+0.20 can update in place. 0.19 or older requires uninstall first due to different certificate.
+New test keystore saved separately for subsequent builds; not a production signing key.
+
+Removed hero caption, home/recents hint, schematic preview caption and manual-clear warning
+from UI and all 43 locale resources; no empty caption spacing retained.
+
+THEME
+Official DynamicColors application lifecycle hook and wrapped overlay context.
+Removed fixed primary/secondary and clear-button fill/ink/ripple colors.
+Native M3 MaterialSwitch track/thumb/animations; check/close via supported thumbIcon slot.
+Bar checked and unchecked states resolve semantic theme roles. Explicit white text retained.
+Physical Xperia wallpaper-derived colors require device verification.
+
+SWITCH REACTIVATION
+Switch always actionable, independent of worker binding state. On starts/retries connection and service;
+missing overlay permission opens the system page. Off hides Shizuku repair UI and suppresses reconnect
+on Activity resume. Explicit unbind clears old epoch/worker-failure state before releasing remote;
+late disconnected callbacks while not bound are ignored. Enabled intent remains while recovering.
+
+CLEAR FEEDBACK
+No clear-action Toast in overlay or diagnostics; underlying diagnostic results retained.
+Plain text/combined content has independent horizontal native ripple room with >=8dp clearance.
+Configured text padding unchanged; top-right and custom placement compensate added feedback inset.
+Preview and manual drag/normalized coordinate conversion use the same compensated geometry.
+Filled/icon feedback unchanged; a single ripple is active in plain mode.
+
+Custom touch handler forwards ACTION_DOWN/MOVE local coordinates to drawableHotspotChanged.
+
+SUPPORT
+Donation card between appearance settings and language. Material dialog on fresh/foreground entry;
+no repeated prompt while shown, on configuration recreation, or immediately after external navigation.
+Donate opens only supplied HTTPS Buy Me a Coffee URL on explicit click; Later dismisses.
+GitHub profile link after diagnostics; exact author credit at bottom.
+4 new keys in every locale; no network permission, payment SDK or payment processing added.
+
+DEFAULTS
+Fresh data and constructor: TEXT_ICON / TOP / no background / WHITE / BOTTOM_CENTER /13dp /0dp padding.
+No migration or overwrite of existing preferences.
+
+SERVICE CHANNEL
+Fixed own package and shell-overview channel only; validates ADB UID2000 and caller ownership.
+Reads channel via INotificationManager.getNotificationChannel; blocks via updateNotificationChannelForPackage; reads back result.
+No arbitrary package/channel action or new AIDL method. Recovery channel and foreground-service lifecycle retained.
+Executed on worker at monitoring start; OEM failure recorded without stopping monitor.
+AOSP Android16 source confirms shell permission; actual Sony behavior and absence of drawer notice need device verification.
+First connection may briefly show notice; OS active-app indicator is outside this channel.
+
+B1 AURORA LOGO
+Native vector foreground and identical alpha-only monochrome layer.
+Adaptive icon resources API26/API33; manifest icon and roundIcon use mipmap/ic_launcher.
+All visible foreground pixels stay within the central 66dp safe circle.
+Native graphics tests verify matching alpha masks, exact three palette colors, API32/API36 loading,
+and transparent white notification glyph. No physical Xperia launcher verification in this build.
+SVG/PNG preview inspected at circular/rounded masks, light/dark monochrome and small sizes.
+B1 Aurora logo introduced in 0.26-test.
+SHA256 signer: 8338652883be860d6b91f41bf61b90244cfc6974b5d7eabec0f9e3bdb2b334cb
+
+0.28 CONNECTION RECOVERY
+Bounded retries at cumulative 2/6/14/30/60 seconds after unlocked enabled initialization.
+Overlay start and real binder-ready/user-present events can resume recovery without Activity onResume.
+Repeated lifecycle events do not extend an active window. Successful connection cancels retry tasks.
+Worker binding timeout retries a clean bind; user disable immediately removes retry tasks.
+Transient STOPPED/WORKER_ERROR states show a silent waiting notification during the window;
+CONNECTING shows connection progress. The same notification ID changes to repair on failure.
+Successful READY and manual disable cancel it. Missing manager, authorization/mode/version
+errors remain actionable. Existing notification permissions/channel choices are preserved.
+Waiting uses AndroidX NotificationCompat.setSilent with ongoing/progress flags, not a new channel.
+Handler delays use uptime; deep sleep may extend wall-clock duration. No wake locks, alarms or permanent polling.
+Recovery tests cover: late dependency, no-ready-callback recovery, worker bind timeout, bounded exhaustion,
+manual cancellation, revoked permission and duplicate lifecycle events.
+Integration uses simulated Shizuku with real RootlessConnection and recovery notification logic.
+No physical Sony reboot test; real server Binder delivery remains device-dependent.
+APK versionCode28 / versionName0.28-test; signer unchanged from 0.20-0.27.
+
+0.29 ACTIVE BINDER ACQUISITION
+Previous retry only inspected the SDK-local binder; it could not acquire a missing server handle.
+Uses Shizuku manager's existing rish REQUEST_BINDER package-scoped broadcast with callback capability.
+Normal app Context.sendBroadcast; no hidden ActivityManager API, new Activity, root, shell execution,
+new permission or external code loading. SDK receives the returned Binder and enforces authorization.
+Callback transaction1 accepts only installed manager UID. Null/stale/disabled replies do not connect.
+Pending requests expire after1.5sec; retries use the existing finite one-minute window.
+SENT journal entry means submitted broadcast; RECEIVED means actual manager reply.
+Six new tests exercise package-scoped wire format, Binder parcel response, forged caller rejection,
+no-response retry, null/stale replies, disabled request suppression, and downstream restore without Activity.
+The integration response is simulated; actual Sony background broadcast delivery is NOT device-tested.
+Official upstream receiver/handler/protocol reviewed; compatible rish protocol required.
+APK versionCode29 / versionName0.29-test. Signature unchanged from0.20-0.28.
+
+0.30 RESOURCE USAGE
+Settings Activity subscribes onStart and unsubscribes onStop, avoiding background full-UI refresh.
+Task callback dispatch and focused-root queries skip work outside overview. Task-presence query
+on log-driven overview entry and task/launch hiding remain; no new polling.
+One overview event updates watch health, detection, diagnostics and observers in a single pass.
+Visibility/busy-only updates no longer recheck recovery notification channels.
+Hidden overlay returns before reading appearance preferences. Healthy connection resume returns
+before reconnect checks or boot-journal writes. Shell worker version30 loads updated watcher.
+Repeated visible overview events remain deliverable to restore independently screen-hidden overlay.
+Four new tests verify stopped Activity unsubscribe/resubscribe, single observer pass with selective
+health notification work, zero focus queries for100 outside-overview checks and correct departure
+hide when inside overview, and repeated overview delivery after simulated screen-off hide.
+Full111 tests passed, including prior binder request/boot recovery regression tests.
+No physical CPU/PSS/battery measurements; no claimed battery percentage or RAM reduction.
+APK versionCode30 / versionName0.30-test; signer unchanged from0.20-0.29.

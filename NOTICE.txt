@@ -1,0 +1,5 @@
+Xperia Recents Rootless test project.
+Shizuku API and Provider 13.1.5: RikkaApps, Apache License 2.0.
+https://github.com/RikkaApps/Shizuku-API
+See app/src/main/assets/licenses for license texts.
+The Gradle wrapper and Kotlin components retain their upstream licenses.
