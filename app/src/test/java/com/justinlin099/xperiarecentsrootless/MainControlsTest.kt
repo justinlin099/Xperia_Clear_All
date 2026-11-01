@@ -102,9 +102,14 @@ class MainControlsTest {
         assertNull(shadowOf(c).nextStartedService) // Rendering checked state must not fire enable action.
         toggle.performClick()
         assertFalse(toggle.isChecked);assertFalse(AutomaticStart.enabled(c))
-        toggle.performClick() // Re-enable checks prerequisites and opens permission settings without locking the switch.
+        toggle.performClick() // Re-enable keeps the switch actionable and explains permission setup first.
         assertTrue(toggle.isChecked);assertTrue(AutomaticStart.enabled(c))
         assertTrue(toggle.isEnabled)
+        assertNull(shadowOf(controller.get()).nextStartedActivity)
+        val guide=org.robolectric.shadows.ShadowDialog.getLatestDialog() as androidx.appcompat.app.AlertDialog
+        assertTrue(guide.isShowing)
+        guide.getButton(android.content.DialogInterface.BUTTON_POSITIVE).performClick()
+        shadowOf(android.os.Looper.getMainLooper()).idle()
         assertEquals(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,shadowOf(controller.get()).nextStartedActivity.action)
         assertNull(shadowOf(c).nextStartedService)
         controller.pause().stop().destroy()

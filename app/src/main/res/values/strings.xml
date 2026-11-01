@@ -16,7 +16,7 @@
     <string name="connect">Connect Shizuku</string>
     <string name="overlay_granted">Overlay · Allowed</string>
     <string name="overlay_denied">Overlay · Not allowed</string>
-    <string name="overlay_hint">Allow the Clear all button to appear over Recents.</string>
+    <string name="overlay_hint">If system settings opens an app list, find and select Xperia Clear All first.\n\nThen try turning on Allow display over other apps. If Android blocks access, dismiss the message and return here for steps 2 and 3.</string>
     <string name="overlay_settings">Manage overlay permission</string>
     <string name="appearance_title">Button settings</string>
     <string name="show_button">Show Clear all</string>
@@ -113,9 +113,9 @@
     <string name="open_link_failed">No app could open this link. Copy the address and open it in a browser.</string>
     <string name="return_and_connect">Return to this app, tap Connect Shizuku, and allow access.</string>
     <string name="restricted_settings">Allow restricted settings</string>
-    <string name="restricted_settings_hint">If the overlay permission screen showed a restricted setting, open this app’s App info, tap ⋮ → Allow restricted settings, and complete the system verification. Return here and tap Done / option unavailable to reopen the overlay permission screen.</string>
+    <string name="restricted_settings_hint">If Android blocked the previous attempt, open this app’s App info and choose ⋮ → Allow restricted settings. Follow the system verification.\n\nOption missing? Go back to step 1 and try enabling the permission to trigger the blocked-access message.\n\nAllowing restricted settings does not grant overlay access. Complete step 3 below.</string>
     <string name="app_info">Open App info</string>
-    <string name="restricted_settings_done">Done / option not shown</string>
+    <string name="restricted_settings_done">Return and allow overlay</string>
     <string name="support_title">Support development</string>
     <string name="support_message">Developing free apps takes time and effort. Your donation is the greatest support.</string>
     <string name="donate">Donate</string>

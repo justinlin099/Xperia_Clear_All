@@ -124,19 +124,22 @@ class RecoveryFlowTest {
         assertEquals("package:"+ShizukuRecovery.PACKAGE,attempts.last().dataString)
     }
     @Test @GraphicsMode(GraphicsMode.Mode.NATIVE)
-    fun firstRunHasFiveSeparateNumberedCardsAndOneMainSwitch() {
+    fun firstRunGroupsOverlayHelpWithItsPermissionAndHasOneMainSwitch() {
         BootRecovery.storage(c).edit().clear().commit()
         shadowOf(c).denyPermissions(Manifest.permission.POST_NOTIFICATIONS)
         org.robolectric.shadows.ShadowSettings.setCanDrawOverlays(false)
         shadowOf(c.getSystemService(android.os.PowerManager::class.java)).setIgnoringBatteryOptimizations(c.packageName,false)
         val controller=Robolectric.buildActivity(MainActivity::class.java).setup().visible()
         val a=controller.get();val root=a.window.decorView
-        val cards=listOf("permission-setup-card","overlay-setup","restricted-settings-card","background-start-card","notification-permission-card").map { root.findViewWithTag<View>(it) }
-        assertEquals(5,cards.toSet().size)
+        val cards=listOf("permission-setup-card","overlay-setup","background-start-card","notification-permission-card").map { root.findViewWithTag<View>(it) }
+        assertEquals(4,cards.toSet().size)
         cards.forEachIndexed { i,v ->
-            assertTrue(v is MaterialCardView);assertEquals(if(i==2) View.GONE else View.VISIBLE,v.visibility)
+            assertTrue(v is MaterialCardView);assertEquals(View.VISIBLE,v.visibility)
             assertTrue(children(v).filterIsInstance<TextView>().first().text.toString().startsWith("${i+1}."))
         }
+        val restricted=root.findViewWithTag<View>("restricted-settings-card")
+        assertEquals(View.GONE,restricted.visibility)
+        assertTrue(children(cards[1]).contains(restricted))
         assertTrue(root.findViewWithTag<MaterialSwitch>("monitoring-switch").isEnabled)
         assertEquals(1,children(root).filterIsInstance<MaterialSwitch>().size)
         assertEquals(a.getString(R.string.get_shizuku),root.findViewWithTag<MaterialButton>("recovery-primary").text)

@@ -1,4 +1,25 @@
-Xperia Clear All 0.30-test
+Xperia Clear All 0.31-test
+
+OVERLAY PERMISSION GUIDE
+One overlay setup card groups: try allowing access, unlock restricted settings if blocked,
+then return to the overlay permission screen and allow it again.
+Settings navigation first shows a cancellable screenshot guide for the app list and denied-access message.
+App info navigation has a separate screenshot guide for the overflow-menu action.
+Cancelling a guide does not mark Settings as visited. Visiting App info does not grant overlay access.
+The final retry remains available without a guessed restricted-settings confirmation flag.
+Traditional Chinese and default English instructions explain the complete sequence.
+The app-list tutorial image is shortened to retain the toolbar and Xperia Clear All row.
+
+VALIDATION
+PASS: Gradle 8.13 / JDK 22 :app:testDebugUnitTest :app:assembleDebug on Windows.
+113 tests, 0 failures, 0 errors, 0 skipped.
+43 locale XML files retain 120 matching resource keys.
+Screenshot-guide layout, scrolling and navigation inspected in a read-only Android 16 emulator.
+Sony Android 17 restricted-settings behavior still requires physical-device validation.
+Debug APK versionCode 31 / versionName 0.31-test. No release published by this local validation.
+Windows screenshot tests now replace existing preview files when rerun.
+
+HISTORICAL VALIDATION: Xperia Clear All 0.30-test
 
 CHANGES
 Setup cards: Shizuku, overlay permission, conditional restricted-settings help, battery, notifications.

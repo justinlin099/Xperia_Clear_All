@@ -6,7 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 
-/** Help appears only after the user has visited the overlay permission screen. */
+/** A Settings visit enables conditional help, not confirmation that access was blocked or unlocked. */
 internal object RestrictedSettingsStep {
     private const val OVERLAY_VISITED="overlaySettingsVisited"
     fun visitOverlay(c:Context) { c.getSharedPreferences("rootless",0).edit().putBoolean(OVERLAY_VISITED,true).apply() }

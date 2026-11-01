@@ -16,7 +16,7 @@
     <string name="connect">連接 Shizuku</string>
     <string name="overlay_granted">上層顯示 · 已允許</string>
     <string name="overlay_denied">上層顯示 · 尚未允許</string>
-    <string name="overlay_hint">允許在多工畫面上顯示清除按鈕。</string>
+    <string name="overlay_hint">進入系統設定後，若先看到應用程式清單，請找到並點選「Xperia Clear All」。\n\n接著實際點選「允許重疊顯示於其他應用程式上方」。如果跳出「應用程式存取權已遭拒絕」，請先點「關閉」並返回這裡，再繼續第 2、3 步。</string>
     <string name="overlay_settings">管理顯示權限</string>
     <string name="appearance_title">按鈕設定</string>
     <string name="show_button">顯示全部清除</string>
@@ -26,7 +26,7 @@
     <string name="language_settings">應用程式語言</string>
     <string name="language_system">依系統語言自動切換。</string>
     <string name="diagnostics_title">診斷</string>
-    <string name="diagnostics_caption">需要排查問題時，再展開這裡。</string>
+    <string name="diagnostics_caption">需要排除問題時，再展開這裡。</string>
     <string name="expand">展開進階選項</string>
     <string name="collapse">收合進階選項</string>
     <string name="probe">檢查連線與權限</string>
@@ -113,9 +113,9 @@
     <string name="open_link_failed">無法開啟連結。請複製網址，再使用瀏覽器開啟。</string>
     <string name="return_and_connect">回到本 App，點選「連接 Shizuku」並允許授權。</string>
     <string name="restricted_settings">解除受限制的設定</string>
-    <string name="restricted_settings_hint">若剛才的上層顯示頁面顯示設定遭到限制，請開啟本 App 的應用程式資訊，點右上角 ⋮ →「解除受限制的設定」，依系統提示驗證後返回。按「已完成／沒有此選項」再次開啟上層顯示頁面。</string>
+    <string name="restricted_settings_hint">若剛才遭到拒絕，開啟本 App 的應用程式資訊，點右上角 ⋮ →「解除受限制的設定」，依系統提示完成驗證。\n\n找不到此選項？先回第 1 步，實際點選允許並觸發拒絕提示。\n\n解除限制不會自動授權，還要完成第 3 步。</string>
     <string name="app_info">開啟應用程式資訊</string>
-    <string name="restricted_settings_done">已完成／沒有此選項</string>
+    <string name="restricted_settings_done">返回並允許上層顯示</string>
     <string name="support_title">支持開發</string>
     <string name="support_message">免費開發 App 需要時間跟心力，您的捐款就是最大的支持</string>
     <string name="donate">捐款支持</string>

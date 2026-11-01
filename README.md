@@ -1,138 +1,100 @@
-# Xperia_Clear_All
-Restore the Clear all button in Recent
+<p align="center">
+  <img src="branding/aurora/icon-circle.png" width="112" alt="Xperia Clear All 圖示">
+</p>
 
-適用於 Sony Xperia 的 Android 工具，透過 Shizuku（ADB 模式）在最近使用畫面提供「全部清除」按鈕。
-APK 發布於 GitHub Releases；Play Console 用來管理 Android 開發者驗證及套件註冊。
+<h1 align="center">Xperia Clear All</h1>
 
-## GitHub 自動編譯、簽名及發布
+<p align="center">
+  把 Xperia 升級 Android 17 後消失的「全部清除」按鈕補回來。
+</p>
 
-此專案已提供 `.github/workflows/android.yml`，使用 JDK 21、Gradle Wrapper 8.13、Android SDK 36。
+<p align="center">
+  <a href="https://github.com/justinlin099/Xperia_Clear_All/releases"><strong>📥 下載 APK</strong></a>
+  &nbsp;·&nbsp;
+  <a href="#setup">⚙️ 首次設定</a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/justinlin099/Xperia_Clear_All/issues">🐛 回報問題</a>
+</p>
 
-| 操作 | 結果 |
-| --- | --- |
-| 推送到 `main` 或提出 PR | 跑單元測試並產生 debug APK，不讀取正式簽名 Secrets |
-| 在 `main` 手動執行 workflow | 通過測試後，產生正式金鑰簽名的 APK，存入 Actions Artifacts |
-| 推送 `v` 開頭的版本標籤 | 通過測試後，簽名並建立 GitHub Release，附上 APK、檔案雜湊及簽名憑證資訊 |
+## 💡 為什麼做這個 App？
 
-### 1. 準備正式簽名金鑰
+Xperia 在 Android 16 原本有「全部清除」按鈕，升級 Android 17 後卻移除了。
+Xperia Clear All 透過 Shizuku 補回這個按鈕，讓你點一下就能清空最近使用的應用程式清單，不需要 Root。
 
-使用自己的 `.jks`／`.keystore`，並確認它對應 Play Console 已註冊的簽名憑證。
-需要知道 keystore 密碼、key alias 及 key 密碼。只有公開的 SHA-256 指紋或 `.pem` 憑證，無法簽名。
+## 📱 畫面預覽
 
-若還沒有正式金鑰，可在 Android Studio 選 **Build → Generate Signed App Bundle or APK → APK → Create new**，
-將 keystore 存到專案外，設定 alias、密碼及至少 25 年的效期。若已用某把金鑰完成套件註冊，請沿用原金鑰。
+| App 主畫面 | 多工畫面的「全部清除」 |
+| :---: | :---: |
+| <img src="docs/images/main-screen.png" width="300" alt="Xperia Clear All 主畫面，包含外觀預覽、啟用開關與按鈕設定"> | <img src="docs/images/recents-clear-all.png" width="300" alt="Sony Xperia 多工畫面，底部顯示 Xperia Clear All 提供的全部清除按鈕"> |
 
-金鑰存放在專案外並另外備份。不要把私鑰或密碼提交到 Git，也不要貼到 issue、建置日誌或聊天裡。
-若需確認 alias 及 SHA-256，可在 PowerShell 執行以下命令（自行替換金鑰路徑；命令會互動式詢問密碼）：
+## ✨ 功能
 
-```powershell
-& 'C:\Program Files\Android\Android Studio\jbr\bin\keytool.exe' -list -v -keystore 'D:\Signing\xperia-release.jks'
-```
+- 按鈕只在多工畫面仍有應用程式時顯示。
+- 可選文字、圖示或圖文並用，自訂外觀與位置，並提供即時預覽。
+- 支援多語系。
 
-### 2. 在 GitHub 加入四個 Repository Secrets
+## 📋 使用需求
 
-進入存放本專案的 GitHub repository（不是個人帳號設定）：
+- 升級至 **Android 17** 的 Sony Xperia 手機，並使用 Sony 原廠桌面。
+- [Shizuku 13 或更新版本](https://shizuku.rikka.app/download/)，使用無線偵錯（ADB）模式。目前不支援 Root 模式。
 
-**Settings → Secrets and variables → Actions → Secrets → New repository secret**
+> 🎯 **其他 Android 版本、第三方桌面及其他品牌手機尚未測試。**
 
-逐一新增下列名稱，名稱須完全一致：
+## 📥 下載與安裝
 
-| Name | Secret |
-| --- | --- |
-| `ANDROID_KEYSTORE_BASE64` | 整份 keystore 轉成 Base64 後的內容 |
-| `ANDROID_KEYSTORE_PASSWORD` | keystore 密碼 |
-| `ANDROID_KEY_ALIAS` | 要使用的 key alias，不是檔名 |
-| `ANDROID_KEY_PASSWORD` | 該 alias 的私鑰密碼；若與 keystore 密碼相同，填入同一個密碼 |
+從 [Releases](https://github.com/justinlin099/Xperia_Clear_All/releases) 下載 `Xperia-Clear-All-版本.apk`，在手機開啟後依系統提示安裝。
 
-在本機 PowerShell 執行下列命令，把 Base64 直接複製到剪貼簿，再貼進第一個 Secret：
+<a name="setup"></a>
 
-```powershell
-$releaseKeystorePath = 'D:\Signing\xperia-release.jks'
-[Convert]::ToBase64String([IO.File]::ReadAllBytes($releaseKeystorePath)) | Set-Clipboard
-```
+## ⚙️ 首次設定
 
-不要把 Base64 寫進程式碼。Base64 是編碼，不是加密；GitHub Secret 才是儲存它的地方。
-單一 Secret 上限為 48 KB；一般單一金鑰的 keystore 通常可容納，若超過上限，需改用加密檔案的流程。
-Secrets 儲存後無法查看原文，但可以重新設定。填完後請清空剪貼簿。
+1. 依照 [Shizuku 官方教學](https://shizuku.rikka.app/guide/setup/#start-via-wireless-debugging) 完成首次配對與啟動。
+2. 開啟 Xperia Clear All，點選「連接 Shizuku」並允許授權。
+3. 點選「管理顯示權限」，依圖解前往系統設定，嘗試開啟「允許重疊顯示於其他應用程式上方」。若遭拒絕，請依下方圖解解除限制後再允許。
+4. 依 App 提示允許背景執行與通知；若電池用量設為「受限制」，請改為「不受限制」。
+5. 開啟「啟用清除按鈕」，返回桌面後再進入多工畫面。
 
-不需要另外建立 Personal Access Token，也不需要上傳 Google Play service account JSON。
-建立 GitHub Release 使用 workflow 自帶的 `GITHUB_TOKEN`，只有發布工作取得 `contents: write` 權限。
+<details>
+<summary>🔓 出現「應用程式存取權已遭拒絕」？</summary>
 
-### 3. 將設定推送到 GitHub
+**必須先嘗試授權並觸發拒絕提示，再回到應用程式資訊解鎖。** 請依序操作：
 
-先在 GitHub Desktop 檢查 Changes；應包含 workflow、release 輔助程式、README、Gradle 簽名設定、
-`.gitignore` 以及 `gradle/wrapper/gradle-wrapper.jar`。不能包含自己的 keystore 或密碼檔。
+1. 依 App 圖解前往系統權限頁面；若先看到應用程式清單，請點選「Xperia Clear All」。嘗試開啟上層顯示，出現「應用程式存取權已遭拒絕」後，點選「關閉」。
+2. 回到 App，點選「開啟應用程式資訊」，再選右上角 **⋮ → 解除受限制的設定**，依系統提示完成驗證。
+3. 回到 App，點選「返回並允許上層顯示」重新開啟權限頁面，這次再開啟「允許重疊顯示於其他應用程式上方」。
 
-在 `main` 提交這些變更，再按 **Push origin**。若使用命令列，可在確認 diff 後執行：
+| 系統封鎖權限 | 解除受限制的設定 |
+| :---: | :---: |
+| <img src="docs/images/restricted-settings-blocked.png" width="280" alt="開啟上層顯示權限時，系統顯示應用程式存取權已遭拒絕"> | <img src="docs/images/allow-restricted-settings.png" width="280" alt="應用程式資訊右上角選單中的解除受限制的設定"> |
 
-```powershell
-git add .github .gitignore README.md app/build.gradle.kts gradle/wrapper/gradle-wrapper.jar
-git commit -m "Add Android CI and signed GitHub releases"
-git push origin main
-```
+</details>
 
-若 Actions 被停用，先到 repository 的 **Actions** 頁啟用。
-若 repository 或 organization 限制可使用的 actions，需允許本 workflow 引用的 `actions/*` 及 `gradle/actions/*`。
+## 🎨 調整外觀與位置
 
-### 4. 先手動產出一個簽名 APK
+在「按鈕設定」調整外觀。若要拖曳位置，選擇「右下角・自訂」→「調整位置」，再到多工畫面拖曳；放開後會儲存並鎖定。調整期間輕點按鈕不會清空清單。
 
-1. 開啟 repository 的 **Actions**。
-2. 選 **Android CI and release**。
-3. 按 **Run workflow**，分支選 **main**，再按 **Run workflow**。
-4. 開啟該次執行，等待 `Test and build debug APK` 及 `Sign APK and publish tagged release` 成功。
-5. 在執行頁面下方的 **Artifacts** 下載 **signed-release-apk**，解壓縮後取得 APK。
+## ❓ 常見問題
 
-首次建置要下載 SDK、Gradle 及測試依賴，可能需要較久。
-`debug-apk` 使用的是測試簽章；要對外發布請使用 **signed-release-apk** 裡的 APK。
-下載的 `signing-certificate.txt` 會包含 `Signer #1 certificate SHA-256 digest`，請和 Play Console 註冊的憑證比較。
-`SHA256SUMS.txt` 則是 APK 檔案本身的 SHA-256，兩者用途不同。
+### 按鈕沒有出現
 
-手動執行只提供下載檔案，不會建立公開的 GitHub Release。
-若還需要註冊用的所有權驗證 APK，可將 Play Console 提供的內容放進
-`app/src/main/assets/adi-registration.properties` 後，使用這個手動流程建置，再上傳到 Play 的驗證頁面。
-這不會將 App 上架 Play 商店。
+確認 Shizuku 已連線、上層顯示權限與啟用開關已開啟，而且最近使用清單中仍有應用程式。先回桌面再進入多工畫面；若仍未出現，可使用 App 內的診斷功能。
 
-### 5. 正式發布到 GitHub Releases
+### 每次使用或重開機後，都要重新連線嗎？
 
-每次發布都先在 `app/build.gradle.kts` 更新：
+手機仍在可使用無線偵錯的 Wi-Fi 環境中，且 Shizuku 與本 App 的連線正常時，不需要重新配對或連線。只有 Shizuku 未執行或連線中斷時，才需開啟 Shizuku 檢查，再回到本 App 連接。
 
-```kotlin
-versionCode = 31
-versionName = "0.31-test"
-```
+## 🐛 回報問題
 
-`versionCode` 必須高於先前發布的數字。範例只供說明，請依實際版本調整。
-先把更新提交並推送到 `main`，接著建立與 `versionName` 完全一致、前面加 `v` 的標籤：
+請在 [Issues](https://github.com/justinlin099/Xperia_Clear_All/issues) 附上機型、Android／App 版本及重現步驟。
+也可在 App 的「診斷」→「展開進階選項」檢查連線並複製結果，一併附上。
 
-```powershell
-git tag v0.31-test
-git push origin v0.31-test
-```
+## ☕ 贊助開發
 
-等待 Actions 成功後，到 repository 的 **Releases** 下載 APK。
-標籤含 `-`（如 `v0.31-test`）會標示為 pre-release；`v0.31` 這類標籤則發布為正式版。
-workflow 會檢查標籤與 APK 的 `versionName` 一致，且發布的 commit 已包含在 `main`。
-不要覆蓋既有 Release 的 APK；若要發布修改後的內容，請遞增版本並建立新標籤。
+覺得這個工具實用，歡迎 [贊助開發](https://buymeacoffee.com/5b32VpsEp5)。
 
-要讓所有人都能下載，repository 必須是 **Public**。Private repository 的 Release 只開放有存取權的人。
-公開原始碼不等於公開金鑰：自己的私鑰仍只保留在本機備份及 GitHub Secrets。
+## 📄 授權與致謝
 
-### 6. 常見問題
+本專案採用 GNU GPLv3，詳見 [LICENSE](LICENSE)。第三方元件資訊請參閱 [NOTICE.txt](NOTICE.txt)。
 
-| 問題 | 處理方式 |
-| --- | --- |
-| 沒看到 Run workflow | 先確認 workflow 已推送到預設分支 `main`，並有 repository 的寫入權限 |
-| `Missing repository secret` | 依訊息補上對應 Repository Secret；不要只新增到 Variables |
-| keystore 密碼或 alias 錯誤 | 用 `keytool -list` 核對 alias，再更新對應 Secret |
-| 版本標籤檢查失敗 | 標籤必須是 `v` 加上 `versionName`，而且該 commit 要在 `main` 上 |
-| 建立 Release 被拒絕 | 查看 job 日誌及 repository／organization 的 Actions 權限政策；workflow 已宣告 `contents: write` |
-| 測試失敗 | 下載 `unit-test-reports`；測試未通過時不會進入簽名發布工作 |
-| APK 無法覆蓋更新 | 檢查新舊版本的套件名稱、簽名及 versionCode；更換簽名通常需要解除安裝舊版，會清除設定 |
-
-本機若未設定簽名環境變數，debug 建置照常運作，release 產物則不會套用正式簽章。
-GitHub Actions 能驗證建置、單元測試及 APK 簽章；Sony 實機的 Shizuku、重開機恢復等行為仍需實機測試。
-
-參考：[GitHub Secrets](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets)、
-[手動執行 workflow](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow)、
-[在 workflow 使用 GitHub CLI](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-github-cli)、
-[Play 套件註冊](https://support.google.com/googleplay/android-developer/answer/16761053?hl=zh-Hant)。
+感謝 [Shizuku](https://github.com/RikkaApps/Shizuku) 與 [Shizuku API](https://github.com/RikkaApps/Shizuku-API)。
+本專案為社群工具，非 Sony 官方應用程式。

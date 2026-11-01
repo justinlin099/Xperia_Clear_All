@@ -12,6 +12,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowInsets
 import android.widget.LinearLayout
+import android.widget.ImageView
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     private var askSupportOnStart=true
     private var externalNavigation=false
     private var supportDialog: androidx.appcompat.app.AlertDialog?=null
+    private var permissionGuideDialog: androidx.appcompat.app.AlertDialog?=null
     private lateinit var preview: RecentsPreviewView
     private val appearanceListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { prefs, key ->
         if (key in ButtonAppearance.keys) preview.configure(ButtonAppearance.read(prefs))
@@ -194,16 +196,31 @@ class MainActivity : AppCompatActivity() {
         overlayState = label(getString(R.string.overlay_denied), 15f, true)
         overlay.addView(overlayState)
         note(overlay, getString(R.string.overlay_hint))
-        action(overlay, getString(R.string.overlay_settings)) { overlaySettings() }.apply { tag="overlay-permission-action" }
+        action(overlay, step(1,getString(R.string.overlay_settings)),true) { overlaySettings() }.apply { tag="overlay-permission-action" }
 
-        val restricted=card(body,step(3,getString(R.string.restricted_settings)),getString(R.string.restricted_settings_hint))
-        restrictedCard=(restricted.parent as View).apply { tag="restricted-settings-card" }
-        action(restricted,getString(R.string.app_info)) { startActivity(RestrictedSettingsStep.appInfo(this)) }
-        action(restricted,getString(R.string.restricted_settings_done)) {
-            overlaySettings()
+        // One overlay-permission guide: attempt first, then offer conditional help.
+        // Visiting Settings does not tell us whether Android actually blocked access.
+        val restricted=column().apply { tag="restricted-settings-card" }
+        restrictedCard=restricted
+        overlay.addView(restricted)
+        restricted.space(20)
+        restricted.addView(label(step(2,getString(R.string.restricted_settings)),16f,true))
+        restricted.space(6)
+        note(restricted,getString(R.string.restricted_settings_hint))
+        restricted.space(12)
+        action(restricted,getString(R.string.app_info)) {
+            showPermissionGuide(step(2,getString(R.string.restricted_settings)),R.string.restricted_settings_hint,
+                listOf(R.drawable.overlay_permission_app_info),R.string.app_info) {
+                startActivity(RestrictedSettingsStep.appInfo(this))
+            }
+        }
+            .apply { tag="restricted-settings-app-info" }
+        restricted.space(12)
+        action(restricted,step(3,getString(R.string.restricted_settings_done)),true) {
+            openOverlaySettings()
         }.apply { tag="restricted-settings-done" }
 
-        val background=card(body,step(4,getString(R.string.background_start)),getString(R.string.background_hint))
+        val background=card(body,step(3,getString(R.string.background_start)),getString(R.string.background_hint))
         backgroundCard=(background.parent as View).apply { tag="background-start-card" }
         action(background,getString(R.string.background_settings)) {
             val restricted=getSystemService(android.app.ActivityManager::class.java).isBackgroundRestricted
@@ -214,7 +231,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val notifications=card(body,step(5,getString(R.string.recovery_notifications)),getString(R.string.notification_hint))
+        val notifications=card(body,step(4,getString(R.string.recovery_notifications)),getString(R.string.notification_hint))
         notificationCard=(notifications.parent as View).apply { tag="notification-permission-card" }
         action(notifications,getString(R.string.allow_notifications)) { notificationPermission() }
 
@@ -255,7 +272,7 @@ class MainActivity : AppCompatActivity() {
         }
         action(details, getString(R.string.copy)) {
             getSystemService(ClipboardManager::class.java).setPrimaryClip(ClipData.newPlainText("Xperia Clear All diagnostics",
-                getString(R.string.diagnostic_format, "0.30-test",
+                getString(R.string.diagnostic_format, "0.31-test",
                     getString(if (ShellOverlayService.active != null) R.string.yes else R.string.no),
                     getString(if (Settings.canDrawOverlays(this)) R.string.yes else R.string.no),
                     RootlessConnection.status, RootlessConnection.detection, RootlessConnection.lastEvent,
@@ -269,7 +286,7 @@ class MainActivity : AppCompatActivity() {
         val github=action(body,"GitHub · JustinLin099") { openLink(GITHUB_URL) }
         github.tag="github-action"
         body.space(16)
-        body.addView(label(getString(R.string.footer, "0.30"), 12f).apply { gravity = Gravity.CENTER })
+        body.addView(label(getString(R.string.footer, "0.31"), 12f).apply { gravity = Gravity.CENTER })
         body.space(6)
         body.addView(label("Made with ❤️ by JustinLin099",13f).apply { gravity=Gravity.CENTER;tag="author-credit";textDirection=View.TEXT_DIRECTION_LTR })
         body.space(12)
@@ -298,6 +315,37 @@ class MainActivity : AppCompatActivity() {
     }
     private fun toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     private fun overlaySettings() {
+        showPermissionGuide(step(1,getString(R.string.overlay_settings)),R.string.overlay_hint,
+            listOf(R.drawable.overlay_permission_app_list,R.drawable.overlay_permission_blocked),R.string.overlay_settings) {
+            openOverlaySettings()
+        }
+    }
+    private fun showPermissionGuide(title:String,hint:Int,images:List<Int>,action:Int,onContinue:()->Unit) {
+        if(permissionGuideDialog?.isShowing==true) return
+        val content=column().apply { setPadding(dp(24),dp(12),dp(24),dp(12)) }
+        content.addView(label(getString(hint),14f))
+        for(image in images) {
+            content.space(16)
+            content.addView(ImageView(this).apply {
+                adjustViewBounds=true
+                scaleType=ImageView.ScaleType.FIT_CENTER
+                setImageResource(image)
+                // The adjacent localized instructions describe each action for screen readers.
+                importantForAccessibility=View.IMPORTANT_FOR_ACCESSIBILITY_NO
+                tag="permission-guide-screenshot"
+            },LinearLayout.LayoutParams(-1,-2))
+        }
+        val scroll=ScrollView(this).apply { addView(content) }
+        permissionGuideDialog=com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+            .setTitle(title).setView(scroll)
+            .setPositiveButton(action) { _,_->onContinue() }
+            .setNegativeButton(android.R.string.cancel,null)
+            .create().apply {
+                setOnDismissListener { permissionGuideDialog=null }
+                show()
+            }
+    }
+    private fun openOverlaySettings() {
         RestrictedSettingsStep.visitOverlay(this)
         startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
     }
@@ -390,6 +438,7 @@ class MainActivity : AppCompatActivity() {
         setupCard.visibility = if(shizukuAllowed) View.GONE else View.VISIBLE
     }
     override fun onDestroy() {
+        permissionGuideDialog?.dismiss();permissionGuideDialog=null
         supportDialog?.dismiss();supportDialog=null
         RootlessConnection.observers.remove(observer)
         if (isFinishing) RootlessConnection.disconnectIfIdle()

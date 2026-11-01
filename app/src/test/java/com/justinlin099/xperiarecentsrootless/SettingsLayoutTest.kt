@@ -65,7 +65,8 @@ class SettingsLayoutTest {
         val temporary = File(file.parentFile, file.name + ".tmp")
         temporary.outputStream().use { assertTrue(png.compress(Bitmap.CompressFormat.PNG, 100, it)) }
         png.recycle()
-        assertTrue(temporary.renameTo(file))
+        java.nio.file.Files.move(temporary.toPath(),file.toPath(),java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+        assertTrue(file.isFile)
         toggle.performClick()
         assertEquals(View.VISIBLE, children(scroll).first { it is TextView && it.text == activity.getString(R.string.copy) }.parent.let { it as View }.visibility)
         controller.pause().stop().destroy()
