@@ -95,20 +95,20 @@ git push origin main
 每次發布都先在 `app/build.gradle.kts` 更新：
 
 ```kotlin
-versionCode = 31
-versionName = "0.31-test"
+versionCode = 32
+versionName = "1.0.0"
 ```
 
 `versionCode` 必須高於先前發布的數字。範例只供說明，請依實際版本調整。
 先把更新提交並推送到 `main`，接著建立與 `versionName` 完全一致、前面加 `v` 的標籤：
 
 ```powershell
-git tag v0.31-test
-git push origin v0.31-test
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
 等待 Actions 成功後，到 repository 的 **Releases** 下載 APK。
-標籤含 `-`（如 `v0.31-test`）會標示為 pre-release；`v0.31` 這類標籤則發布為正式版。
+標籤含 `-`（如 `v1.0.1-test`）會標示為 pre-release；`v1.0.0` 這類標籤則發布為正式版。
 workflow 會檢查標籤與 APK 的 `versionName` 一致，且發布的 commit 已包含在 `main`。
 不要覆蓋既有 Release 的 APK；若要發布修改後的內容，請遞增版本並建立新標籤。
 

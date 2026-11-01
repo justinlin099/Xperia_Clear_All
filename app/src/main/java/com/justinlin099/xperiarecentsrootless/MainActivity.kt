@@ -272,7 +272,7 @@ class MainActivity : AppCompatActivity() {
         }
         action(details, getString(R.string.copy)) {
             getSystemService(ClipboardManager::class.java).setPrimaryClip(ClipData.newPlainText("Xperia Clear All diagnostics",
-                getString(R.string.diagnostic_format, "0.31-test",
+                getString(R.string.diagnostic_format, BuildConfig.VERSION_NAME,
                     getString(if (ShellOverlayService.active != null) R.string.yes else R.string.no),
                     getString(if (Settings.canDrawOverlays(this)) R.string.yes else R.string.no),
                     RootlessConnection.status, RootlessConnection.detection, RootlessConnection.lastEvent,
@@ -286,7 +286,7 @@ class MainActivity : AppCompatActivity() {
         val github=action(body,"GitHub · JustinLin099") { openLink(GITHUB_URL) }
         github.tag="github-action"
         body.space(16)
-        body.addView(label(getString(R.string.footer, "0.31"), 12f).apply { gravity = Gravity.CENTER })
+        body.addView(label(getString(R.string.footer, BuildConfig.VERSION_NAME), 12f).apply { gravity = Gravity.CENTER })
         body.space(6)
         body.addView(label("Made with ❤️ by JustinLin099",13f).apply { gravity=Gravity.CENTER;tag="author-credit";textDirection=View.TEXT_DIRECTION_LTR })
         body.space(12)

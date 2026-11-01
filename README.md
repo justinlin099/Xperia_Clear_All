@@ -5,6 +5,10 @@
 <h1 align="center">Xperia Clear All</h1>
 
 <p align="center">
+  <strong>繁體中文</strong> · <a href="README.en.md">English</a>
+</p>
+
+<p align="center">
   把 Xperia 升級 Android 17 後消失的「全部清除」按鈕補回來。
 </p>
 

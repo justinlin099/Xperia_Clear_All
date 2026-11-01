@@ -1,4 +1,19 @@
-Xperia Clear All 0.31-test
+Xperia Clear All 1.0.0
+
+STABLE RELEASE VERSION
+versionCode 32 / versionName 1.0.0.
+Footer and copied diagnostics read BuildConfig.VERSION_NAME; test labels removed.
+English user README added with language links in both READMEs.
+
+VALIDATION
+PASS: Gradle 8.13 / JDK 22 :app:testDebugUnitTest :app:assembleDebug on Windows.
+113 tests, 0 failures, 0 errors, 0 skipped.
+Debug APK metadata confirms versionCode 32 / versionName 1.0.0.
+Local README links and image paths checked in both languages.
+Sony Android 17 physical-device validation remains as described below.
+Signed APK and GitHub Release are produced by the v1.0.0 tag workflow.
+
+HISTORICAL VALIDATION: Xperia Clear All 0.31-test
 
 OVERLAY PERMISSION GUIDE
 One overlay setup card groups: try allowing access, unlock restricted settings if blocked,
