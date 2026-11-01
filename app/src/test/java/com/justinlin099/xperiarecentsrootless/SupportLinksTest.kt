@@ -72,7 +72,7 @@ class SupportLinksTest {
         assertTrue(body.indexOfChild(github)<body.indexOfChild(credit))
         assertEquals("Made with ❤️ by JustinLin099",credit.text.toString())
         github.performClick()
-        assertEquals(MainActivity.GITHUB_URL,shadowOf(a).nextStartedActivity.dataString)
+        assertEquals("https://github.com/justinlin099/Xperia_Clear_All",shadowOf(a).nextStartedActivity.dataString)
         controller.pause().stop().destroy()
     }
 }

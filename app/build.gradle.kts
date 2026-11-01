@@ -21,8 +21,8 @@ android {
         applicationId = "com.justinlin099.xperiarecentsrootless"
         minSdk = 30
         targetSdk = 36
-        versionCode = 32
-        versionName = "1.0.0"
+        versionCode = 33
+        versionName = "1.1.0"
     }
     buildFeatures { aidl = true; buildConfig = true }
     signingConfigs {

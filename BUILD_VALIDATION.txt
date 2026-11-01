@@ -1,4 +1,18 @@
-Xperia Clear All 1.0.0
+Xperia Clear All 1.1.0
+
+GITHUB LINK FIX
+versionCode 33 / versionName 1.1.0.
+The footer GitHub button opens https://github.com/justinlin099/Xperia_Clear_All.
+Button label now identifies the project. The existing navigation test checks the repo URL.
+
+VALIDATION
+PASS: Gradle 8.13 / JDK 22 :app:testDebugUnitTest --tests
+com.justinlin099.xperiarecentsrootless.SupportLinksTest :app:assembleDebug on Windows.
+3 tests, 0 failures, 0 errors, 0 skipped.
+Debug APK metadata confirms versionCode 33 / versionName 1.1.0.
+The tag workflow runs the full test suite before signing and publishing the release.
+
+HISTORICAL VALIDATION: Xperia Clear All 1.0.0
 
 STABLE RELEASE VERSION
 versionCode 32 / versionName 1.0.0.

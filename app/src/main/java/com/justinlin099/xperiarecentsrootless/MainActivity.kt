@@ -26,7 +26,7 @@ import kotlin.math.roundToInt
 class MainActivity : AppCompatActivity() {
     companion object {
         internal const val DONATION_URL="https://buymeacoffee.com/5b32VpsEp5"
-        internal const val GITHUB_URL="https://github.com/JustinLin099"
+        internal const val GITHUB_URL="https://github.com/justinlin099/Xperia_Clear_All"
     }
     private var askSupportOnStart=true
     private var externalNavigation=false
@@ -283,7 +283,7 @@ class MainActivity : AppCompatActivity() {
         }
         details.space(12)
         result = note(details, getString(R.string.no_check)).apply { setTextIsSelectable(true); typeface = Typeface.MONOSPACE }
-        val github=action(body,"GitHub · JustinLin099") { openLink(GITHUB_URL) }
+        val github=action(body,"GitHub · Xperia Clear All") { openLink(GITHUB_URL) }
         github.tag="github-action"
         body.space(16)
         body.addView(label(getString(R.string.footer, BuildConfig.VERSION_NAME), 12f).apply { gravity = Gravity.CENTER })
